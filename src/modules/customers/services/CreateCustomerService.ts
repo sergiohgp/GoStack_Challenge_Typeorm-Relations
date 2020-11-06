@@ -15,17 +15,13 @@ class CreateCustomerService {
   constructor(
     @inject('CustomersRepository')
     private customersRepository: ICustomersRepository,
-  ) { }
+  ) {}
 
   public async execute({ name, email }: IRequest): Promise<Customer> {
-    const checkCustomerExists = await this.customersRepository.findByEmail(
-      email,
-    );
+    const customerExists = await this.customersRepository.findByEmail(email);
 
-    console.log(checkCustomerExists);
-
-    if (checkCustomerExists) {
-      throw new AppError('Email already in use.');
+    if (customerExists) {
+      throw new AppError('This e-mail is already assigned to a customer');
     }
 
     const customer = await this.customersRepository.create({
